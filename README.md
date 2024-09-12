@@ -7,13 +7,14 @@ Discord bot to support the 2023 HTSTEM April Fools event.
 [//]: # ( TODO: paste backstory from notion)
 
 ---
+## Setup
 
-## Requirements
+### Requirements
 - Kotlin
 - Gradle
 - Discord bot token, server
 
-## Configuration
+### Configuration
 
 A skeleton configuration will be generated at first run at `bot.conf`. The token, guild, channel, and roles are required at minimum.
 
@@ -48,10 +49,18 @@ A skeleton configuration will be generated at first run at `bot.conf`. The token
 }
 ```
 
-## Running
+### Running
 
 A gradle task is configured to run the application.
 
 ```shell
 ./gradlew run
 ```
+
+Alternatively, standalone bundles can be built:
+
+```shell
+./gradlew assembleDist
+```
+
+And the output can be found in `build/distributions`.

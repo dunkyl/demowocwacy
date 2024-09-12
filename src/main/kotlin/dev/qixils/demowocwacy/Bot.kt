@@ -38,6 +38,7 @@ import java.io.File
 import java.time.Month
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import kotlin.system.exitProcess
 
 @OptIn(ExperimentalSerializationApi::class)
 object Bot {
@@ -125,7 +126,9 @@ object Bot {
         jda = light(config.token, enableCoroutines=true) {
             // I don't think I need member updates/joins/leaves but if I do the intent is GUILD_MEMBERS
             intents += GatewayIntent.MESSAGE_CONTENT
+            intents += GatewayIntent.GUILD_MEMBERS
         }
+
         // disable @everyone pings
         MessageRequest.setDefaultMentions(emptySet())
         // init decrees
@@ -246,6 +249,15 @@ object Bot {
             jda.awaitReady()
             // init active decrees
             selectedDecrees.filter(Decree::persistent).forEach { it.execute() }
+
+//            val channel = channel
+//            val g = channel.guild
+//            println(g.name)
+//            val member = channel.guild.getMemberById(243147633021943818)!!
+//            println(PermissionUtil.checkPermission(channel, member, Permission.MESSAGE_SEND_IN_THREADS))
+//
+//            exitProcess(3)
+
             // loop
             while (true) {
                 // abort after April 1st
@@ -267,7 +279,7 @@ object Bot {
     private suspend fun handleElectionRegistrationPhase() {
         // wait for start of election cycle (top of the hour)
         var now = System.currentTimeMillis()
-        val nextHour = now + 3600000 - now % 3600000
+        val nextHour = now + 36000 - now % 36000
         delay(nextHour - now)
         // put signup form in elections channel
         val messageData = MessageCreate {
@@ -282,7 +294,7 @@ object Bot {
         val message = channel.sendMessage(messageData).await()
         // sleep until XX:30
         now = System.currentTimeMillis()
-        val nextHalfHour = now + 1800000 - now % 1800000
+        val nextHalfHour = now + 18000 - now % 18000
         delay(nextHalfHour - now)
         // close signup form
         message.editMessageComponents(message.components.map { it.asDisabled() }).queue()
@@ -327,7 +339,7 @@ object Bot {
         val message = channel.sendMessage(messageData).await()
         // sleep until XX:40
         val now = System.currentTimeMillis()
-        val nextTenMins = now + 600000 - now % 600000
+        val nextTenMins = now + 6000 - now % 6000
         delay(nextTenMins - now)
         // close ballot and threads
         message.editMessageComponents(message.components.map { it.asDisabled() }).queue()
@@ -366,7 +378,7 @@ object Bot {
                         }
                     })
                 }).await()
-                delay(300000)
+                delay(3000)
                 votes.clear()
                 for ((voter, candidate) in state.election.tieBreakVotes) {
                     if (candidate !in winners) {
